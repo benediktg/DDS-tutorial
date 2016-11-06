@@ -9,6 +9,11 @@ function setField(element) {
     } else {
         element.style.backgroundColor = '#eee';
     }
+    if (++changeCounter === 10) {
+        alert('You have clicked 10 times on the field!');
+        // Should the counter be reset after the alert?
+        // changeCounter = 0;
+    }
 }
 
 function setFillColor(color) {
