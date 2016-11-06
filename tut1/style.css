@@ -1,31 +1,31 @@
 body {
     background-color: grey;
-  }
+}
 
-  h1 {
+h1 {
     color: white;
     background-color: green;
     padding: 10px;
-  }
+}
 
-  #wrapper {
+#wrapper {
     background-color: lightgrey;
-  }
+}
 
-  #left {
+#left {
     width: 200px;
     float: left;
     margin: 0;
     padding: 10px;
-  }
+}
 
-  #right {
+#right {
     margin-left: 211px;
     padding: 10px;
     border-left: 1px solid green;
-  }
+}
 
-  p.backgroundText {
+p.backgroundText {
     opacity: 0.4;
     color: orange;
     font-size: 10em;
@@ -33,24 +33,24 @@ body {
     position: absolute;
     left: 211;
     top: 0;
-  }
+}
 
-  p.foregroundText {
+p.foregroundText {
     z-index: 1;
-  }
+}
 
-  table {
+table {
     margin: auto;
     border-collapse: collapse;
-  }
+}
 
-  th {
+th {
     color: white;
     background-color: green;
-  }
+}
 
-  td,
-  th {
+td,
+th {
     border: 1px solid green;
     padding: 10px;
-  }
+}
