@@ -24,7 +24,7 @@ function setField(element) {
 function setFillColor(color) {
     // color should be a string
     var logEntry = document.createElement('p');
-    logEntry.appendChild(document.createTextNode('Color changed'));
+    logEntry.innerHTML = 'Color changed';
     logEntry.style.color = currentFillColor = color;
     document.getElementById('Log').appendChild(logEntry);
 }
