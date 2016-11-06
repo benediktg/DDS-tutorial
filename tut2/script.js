@@ -8,4 +8,5 @@ function setField(element) {
 
 function setFillColor(color) {
     // color should be a string
+    currentFillColor = color;
 }
