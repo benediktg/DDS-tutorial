@@ -1,0 +1,56 @@
+body {
+    background-color: grey;
+  }
+
+  h1 {
+    color: white;
+    background-color: green;
+    padding: 10px;
+  }
+
+  #wrapper {
+    background-color: lightgrey;
+  }
+
+  #left {
+    width: 200px;
+    float: left;
+    margin: 0;
+    padding: 10px;
+  }
+
+  #right {
+    margin-left: 211px;
+    padding: 10px;
+    border-left: 1px solid green;
+  }
+
+  p.backgroundText {
+    opacity: 0.4;
+    color: orange;
+    font-size: 10em;
+    font-style: italic;
+    position: absolute;
+    left: 211;
+    top: 0;
+  }
+
+  p.foregroundText {
+    z-index: 1;
+  }
+
+  table {
+    margin: auto;
+    border-collapse: collapse;
+  }
+
+  th {
+    color: white;
+    background-color: green;
+  }
+
+  td,
+  th {
+    border: 1px solid green;
+    padding: 10px;
+  }
