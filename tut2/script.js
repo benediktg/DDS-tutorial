@@ -4,7 +4,11 @@ var changeCounter = 0;       // ???
 
 function setField(element) {
     // element contains the current html element
-    element.style.backgroundColor = currentFillColor;
+    if (element.style.backgroundColor !== currentFillColor) {
+        element.style.backgroundColor = currentFillColor;
+    } else {
+        element.style.backgroundColor = '#eee';
+    }
 }
 
 function setFillColor(color) {
