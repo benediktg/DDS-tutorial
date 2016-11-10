@@ -16,10 +16,13 @@ function initClickHandlers() {
         row = table.children[i];
         for (j = 0; j < width; ++j) {
             elem = row.children[j];
-            elem.addEventListener("click", function() {
-                this.innerHTML = "";
-                this.style = "";
-            });
+            if (!elem.hasAttribute("hasEventHandler")) {
+                elem.addEventListener("click", function() {
+                    this.innerHTML = "";
+                    this.style = "";
+                });
+                elem.setAttribute("hasEventHandler", "true");
+            }
         }
     }
 }
