@@ -1,5 +1,3 @@
-var rowCount = 4;
-var colCount = 4;
 var table = document.getElementsByTagName("tbody")[0];
 
 function setTableElement(col, row, text, css) {
@@ -31,13 +29,24 @@ function handleMyButton() {
     var row = document.getElementById("field_y").value;
     var text = document.getElementById("text").value;
     var css = document.getElementById("css").value;
-    setTableElement(col, row, text, css);
+    var height = table.children.length;
+    var width = table.children[0].children.length;
+    if (row < height && col < width) {
+        setTableElement(col, row, text, css);
+    } else {
+        if (row >= height) {
+            // add rows
+        }
+        if (col >= width) {
+            // add columns
+        }
+        initClickHandlers();
+    }
 }
 
 function main() {
     initClickHandlers();
     document.getElementById("mybutton").addEventListener("click", handleMyButton);
-
 }
 
 main();
