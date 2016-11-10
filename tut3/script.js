@@ -7,8 +7,31 @@ function setTableElement(col, row, text, css) {
     table.children[row].children[col].style = css;
 }
 
+function clearTableElement(elem) {
+    elem.innerHTML = "";
+    elem.style = "";
+}
+
 function getTableElement(col, row) {
     return table.children[row].children[col];
+}
+
+function initClickHandlers() {
+    var height = table.children.length;
+    var width = table.children[0].children.length;
+    var i;
+    var j;
+    var row;
+    var elem;
+    for (i = 0; i < height; ++i) {
+        row = table.children[i];
+        for (j = 0; j < width; ++j) {
+            elem = row.children[j];
+            elem.addEventListener("click", function() {
+                clearTableElement(this)
+            });
+        }
+    }
 }
 
 function handleMyButton() {
@@ -19,8 +42,8 @@ function handleMyButton() {
     setTableElement(col, row, text, css);
 }
 
-
 function main() {
+    initClickHandlers();
     document.getElementById("mybutton").addEventListener("click", handleMyButton);
 
 }
