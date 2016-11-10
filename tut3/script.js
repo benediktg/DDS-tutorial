@@ -7,15 +7,6 @@ function setTableElement(col, row, text, css) {
     table.children[row].children[col].style = css;
 }
 
-function clearTableElement(elem) {
-    elem.innerHTML = "";
-    elem.style = "";
-}
-
-function getTableElement(col, row) {
-    return table.children[row].children[col];
-}
-
 function initClickHandlers() {
     var height = table.children.length;
     var width = table.children[0].children.length;
@@ -28,7 +19,8 @@ function initClickHandlers() {
         for (j = 0; j < width; ++j) {
             elem = row.children[j];
             elem.addEventListener("click", function() {
-                clearTableElement(this)
+                this.innerHTML = "";
+                this.style = "";
             });
         }
     }
