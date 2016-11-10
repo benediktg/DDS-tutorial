@@ -1,40 +1,28 @@
-var text = "";
-var fieldX = "";
-var fieldY = "";
-var css = "";
+var rowCount = 4;
+var colCount = 4;
 var table = document.getElementsByTagName("tbody")[0];
 
-function setTableElement(i, j, text, css) {
-    table.children[i].children[j].innerHTML = text;
-    table.children[i].children[j].style = css;
+function setTableElement(col, row, text, css) {
+    table.children[row].children[col].innerHTML = text;
+    table.children[row].children[col].style = css;
 }
 
-function getTableElement(i, j) {
-    return table.children[i].children[j];
-}
-
-function handleTextInput() {
-    text = document.getElementById("text").value;
-}
-
-function handleFieldXInput() {
-    fieldX = document.getElementById("field_x").value;
-}
-
-function handleFieldYInput() {
-    fieldY = document.getElementById("field_y").value;
-}
-
-function handleCssInput() {
-    css = document.getElementById("css").value;
+function getTableElement(col, row) {
+    return table.children[row].children[col];
 }
 
 function handleMyButton() {
+    var col = document.getElementById("field_x").value;
+    var row = document.getElementById("field_y").value;
+    var text = document.getElementById("text").value;
+    var css = document.getElementById("css").value;
+    setTableElement(col, row, text, css);
+}
+
+
+function main() {
+    document.getElementById("mybutton").addEventListener("click", handleMyButton);
 
 }
 
-document.getElementById("text").addEventListener("change", handleTextInput);
-document.getElementById("field_x").addEventListener("change", handleFieldXInput);
-document.getElementById("field_y").addEventListener("change", handleFieldYInput);
-document.getElementById("css").addEventListener("change", handleCssInput);
-document.getElementById("mybutton").addEventListener("click", handleMyButton);
+main();
