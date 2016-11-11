@@ -1,54 +1,83 @@
 var table = document.getElementsByTagName("tbody")[0];
+var height = 4;
+var width = 4;
+var cleanRow;
+var cleanElem;
 
-function setTableElement(col, row, text, css) {
-    table.children[row].children[col].innerHTML = text;
-    table.children[row].children[col].style = css;
+function getTableElement(row, col) {
+    "use strict";
+    var selectedRow = table.firstElementChild;
+    while (row > 0) {
+        selectedRow = selectedRow.nextElementSibling;
+        row -= 1;
+    }
+    var elem = selectedRow.firstElementChild;
+    while (col > 0) {
+        elem = elem.nextElementSibling;
+        col -= 1;
+    }
+    return elem;
+}
+
+function setClickHandler(row, col) {
+    "use strict";
+    var elem = getTableElement(row, col);
+    elem.addEventListener("click", function () {
+        elem.innerHTML = "";
+        elem.style = "";
+    });
 }
 
 function initClickHandlers() {
-    var height = table.children.length;
-    var width = table.children[0].children.length;
+    "use strict";
     var i;
     var j;
-    var row;
-    var elem;
-    for (i = 0; i < height; ++i) {
-        row = table.children[i];
-        for (j = 0; j < width; ++j) {
-            elem = row.children[j];
-            if (!elem.hasAttribute("hasEventHandler")) {
-                elem.addEventListener("click", function() {
-                    this.innerHTML = "";
-                    this.style = "";
-                });
-                elem.setAttribute("hasEventHandler", "true");
-            }
+    for (i = 0; i < height; i += 1) {
+        for (j = 0; j < width; j += 1) {
+            setClickHandler(i, j);
         }
     }
 }
 
+
 function handleMyButton() {
-    var col = document.getElementById("field_x").value;
-    var row = document.getElementById("field_y").value;
+    "use strict";
+    var col = parseInt(document.getElementById("field_x").value);
+    var row = parseInt(document.getElementById("field_y").value);
     var text = document.getElementById("text").value;
     var css = document.getElementById("css").value;
-    var height = table.children.length;
-    var width = table.children[0].children.length;
-    if (row < height && col < width) {
-        setTableElement(col, row, text, css);
-    } else {
-        if (row >= height) {
-            // add rows
+    var i;
+    var j;
+    var copiedElem;
+    var copiedRow;
+    if (col >= width) {
+        for (i = 0; i < height; i += 1) {
+            for (j = width - 1; j < col; j += 1) {
+                copiedElem = cleanElem.cloneNode(true);
+                table.children[i].appendChild(copiedElem);
+                copiedElem = cleanElem.cloneNode(true);
+                cleanRow.appendChild(copiedElem);
+            }
         }
-        if (col >= width) {
-            // add columns
-        }
-        initClickHandlers();
+        width = col + 1;
     }
+    if (row >= height) {
+        for (i = height - 1; i < row; i += 1) {
+            copiedRow = cleanRow.cloneNode(true);
+            table.appendChild(copiedRow);
+        }
+        height = row + 1;
+    }
+    var elem = getTableElement(row, col);
+    elem.innerHTML = text;
+    elem.style = css;
 }
 
 function main() {
+    "use strict";
     initClickHandlers();
+    cleanRow = table.firstElementChild.cloneNode(true);
+    cleanElem = cleanRow.firstElementChild.cloneNode(true);
     document.getElementById("mybutton").addEventListener("click", handleMyButton);
 }
 
