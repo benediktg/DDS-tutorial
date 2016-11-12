@@ -33,6 +33,22 @@ function ensureTableSize(minHeight, minWidth) {
     }
 }
 
+function getTableCell(row, col) {
+    "use strict";
+    ensureTableSize(row, col);
+    var selectedRow = table.firstElementChild;
+    while (row > 0) {
+        selectedRow = selectedRow.nextElementSibling;
+        row -= 1;
+    }
+    var cell = selectedRow.firstElementChild;
+    while (col > 0) {
+        cell = cell.nextElementSibling;
+        col -= 1;
+    }
+    return cell;
+}
+
 function handleMyButton() {
     "use strict";
     var col = parseInt(document.getElementById("field_x").value);
@@ -40,23 +56,17 @@ function handleMyButton() {
     var text = document.getElementById("text").value;
     var css = document.getElementById("css").value;
 
-    ensureTableSize(row, col);
-    var selectedRow = table.rows[row];
-    var elem = selectedRow.cells[col];
-    elem.innerHTML = text;
-    elem.style = css;
-    if (elem.getAttribute("eventlistener") !== "available") {
-        elem.addEventListener("click", function () {
+    var cell = getTableCell(row, col);
+    cell.innerHTML = text;
+    cell.style = css;
+    /* add eventlistener only once */
+    if (cell.getAttribute("eventlistener") !== "available") {
+        cell.addEventListener("click", function () {
             this.innerHTML = "";
             this.style = "";
         });
-        elem.setAttribute("eventlistener", "available");
+        cell.setAttribute("eventlistener", "available");
     }
 }
 
-function main() {
-    "use strict";
-    document.getElementById("mybutton").addEventListener("click", handleMyButton);
-}
-
-main();
+document.getElementById("mybutton").addEventListener("click", handleMyButton);
