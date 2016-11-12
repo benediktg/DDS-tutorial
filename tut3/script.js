@@ -45,10 +45,13 @@ function handleMyButton() {
     var elem = selectedRow.cells[col];
     elem.innerHTML = text;
     elem.style = css;
-    elem.addEventListener("click", function () {
-        elem.innerHTML = "";
-        elem.style = "";
-    });
+    if (elem.getAttribute("eventlistener") !== "available") {
+        elem.addEventListener("click", function () {
+            this.innerHTML = "";
+            this.style = "";
+        });
+        elem.setAttribute("eventlistener", "available");
+    }
 }
 
 function main() {
