@@ -1,44 +1,57 @@
 var table = document.getElementsByTagName("tbody")[0];
-var height = 4;
-var width = 4;
-var cleanRow;
-var cleanElem;
 
-function getTableElement(row, col) {
+function addRow() {
     "use strict";
-    var selectedRow = table.firstElementChild;
-    while (row > 0) {
-        selectedRow = selectedRow.nextElementSibling;
-        row -= 1;
+    var width = table.rows[0].cells.length;
+    var newRow = table.insertRow();
+    var newCell;
+    while (width > 0) {
+        width -= 1;
+        newCell = newRow.insertCell();
+        newCell.addEventListener("click", function () {
+            newCell.innerHTML = "";
+            newCell.style = "";
+        });
     }
-    var elem = selectedRow.firstElementChild;
-    while (col > 0) {
-        elem = elem.nextElementSibling;
-        col -= 1;
+}
+
+function addCol() {
+    "use strict";
+    var height = table.rows.length;
+    var newCell;
+    while (height > 0) {
+        height -= 1;
+        newCell = table.rows[height].insertCell();
+        newCell.addEventListener("click", function () {
+            newCell.innerHTML = "";
+            newCell.style = "";
+        });
     }
-    return elem;
+}
+
+function ensureTableSize(minHeight, minWidth) {
+    "use strict";
+    var currentHeight = table.rows.length;
+    var currentWidth = table.rows[0].cells.length;
+    while (currentHeight <= minHeight) {
+        addRow();
+        currentHeight = table.rows.length;
+    }
+    while (currentWidth <= minWidth) {
+        addCol();
+        currentWidth = table.rows[0].cells.length;
+    }
 }
 
 function setClickHandler(row, col) {
     "use strict";
-    var elem = getTableElement(row, col);
+    var selectedRow = table.rows[row];
+    var elem = selectedRow.cells[col];
     elem.addEventListener("click", function () {
         elem.innerHTML = "";
         elem.style = "";
     });
 }
-
-function initClickHandlers() {
-    "use strict";
-    var i;
-    var j;
-    for (i = 0; i < height; i += 1) {
-        for (j = 0; j < width; j += 1) {
-            setClickHandler(i, j);
-        }
-    }
-}
-
 
 function handleMyButton() {
     "use strict";
@@ -46,38 +59,26 @@ function handleMyButton() {
     var row = parseInt(document.getElementById("field_y").value);
     var text = document.getElementById("text").value;
     var css = document.getElementById("css").value;
-    var i;
-    var j;
-    var copiedElem;
-    var copiedRow;
-    if (col >= width) {
-        for (i = 0; i < height; i += 1) {
-            for (j = width - 1; j < col; j += 1) {
-                copiedElem = cleanElem.cloneNode(true);
-                table.children[i].appendChild(copiedElem);
-                copiedElem = cleanElem.cloneNode(true);
-                cleanRow.appendChild(copiedElem);
-            }
-        }
-        width = col + 1;
-    }
-    if (row >= height) {
-        for (i = height - 1; i < row; i += 1) {
-            copiedRow = cleanRow.cloneNode(true);
-            table.appendChild(copiedRow);
-        }
-        height = row + 1;
-    }
-    var elem = getTableElement(row, col);
+
+    ensureTableSize(row, col);
+    var selectedRow = table.rows[row];
+    var elem = selectedRow.cells[col];
     elem.innerHTML = text;
     elem.style = css;
 }
 
 function main() {
     "use strict";
-    initClickHandlers();
-    cleanRow = table.firstElementChild.cloneNode(true);
-    cleanElem = cleanRow.firstElementChild.cloneNode(true);
+    var height = table.rows.length;
+    var width;
+    while (height > 0) {
+        height -= 1;
+        width = table.rows[height].cells.length;
+        while (width > 0) {
+            width -= 1;
+            setClickHandler(height, width);
+        }
+    }
     document.getElementById("mybutton").addEventListener("click", handleMyButton);
 }
 
