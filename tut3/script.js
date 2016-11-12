@@ -4,28 +4,18 @@ function addRow() {
     "use strict";
     var width = table.rows[0].cells.length;
     var newRow = table.insertRow();
-    var newCell;
     while (width > 0) {
         width -= 1;
-        newCell = newRow.insertCell();
-        newCell.addEventListener("click", function () {
-            newCell.innerHTML = "";
-            newCell.style = "";
-        });
+        newRow.insertCell();
     }
 }
 
 function addCol() {
     "use strict";
     var height = table.rows.length;
-    var newCell;
     while (height > 0) {
         height -= 1;
-        newCell = table.rows[height].insertCell();
-        newCell.addEventListener("click", function () {
-            newCell.innerHTML = "";
-            newCell.style = "";
-        });
+        table.rows[height].insertCell();
     }
 }
 
@@ -43,16 +33,6 @@ function ensureTableSize(minHeight, minWidth) {
     }
 }
 
-function setClickHandler(row, col) {
-    "use strict";
-    var selectedRow = table.rows[row];
-    var elem = selectedRow.cells[col];
-    elem.addEventListener("click", function () {
-        elem.innerHTML = "";
-        elem.style = "";
-    });
-}
-
 function handleMyButton() {
     "use strict";
     var col = parseInt(document.getElementById("field_x").value);
@@ -65,20 +45,14 @@ function handleMyButton() {
     var elem = selectedRow.cells[col];
     elem.innerHTML = text;
     elem.style = css;
+    elem.addEventListener("click", function () {
+        elem.innerHTML = "";
+        elem.style = "";
+    });
 }
 
 function main() {
     "use strict";
-    var height = table.rows.length;
-    var width;
-    while (height > 0) {
-        height -= 1;
-        width = table.rows[height].cells.length;
-        while (width > 0) {
-            width -= 1;
-            setClickHandler(height, width);
-        }
-    }
     document.getElementById("mybutton").addEventListener("click", handleMyButton);
 }
 
