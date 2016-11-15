@@ -10,12 +10,12 @@ loadList();
 function loadList() {
     "use strict";
     var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             getEntries(JSON.parse(this.responseText));
         }
     };
-    xhr.open("GET", url, true);
     xhr.send();
     return;
 }
@@ -45,8 +45,9 @@ function getEntries(array) {
 function removeEntry(aTag) {
     "use strict";
     var id = aTag.parentElement.getAttribute("entry-id");
+    var params = "id=" + id
     var xhr = new XMLHttpRequest();
-    xhr.open("DELETE", url + "?id=" + id, true);
+    xhr.open("DELETE", url + "?" + params, true);
     xhr.send();
     list.removeChild(localEntries[id]);
     delete localEntries[id];
@@ -56,21 +57,24 @@ function removeEntry(aTag) {
 function postEntry() {
     "use strict";
     var xhr = new XMLHttpRequest();
-    var name = form["name"];
-    var text = form["text"];
+    var name = fixedEncodeURIComponent(form["name"].value);
+    var text = fixedEncodeURIComponent(form["text"].value);
+    var params = "name=" + name + "&text=" + text;
     var response;
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             response = JSON.parse(this.responseText);
             getSingleEntry(response.entry);
         }
     };
-    xhr.open("POST", url, true);
-    xhr.send("name=" + name + "&text=" + text);
+    xhr.send(params);
     return;
 }
 
 function getSingleEntry(object) {
+    "use strict";
     if (String(object.id) in localEntries) {
         return;
     }
@@ -84,4 +88,11 @@ function getSingleEntry(object) {
     list.appendChild(entry);
     localEntries[String(object.id)] = entry;
     return;
+}
+
+function fixedEncodeURIComponent(str) {
+    "use strict";
+    return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+        return '%' + c.charCodeAt(0).toString(16);
+    });
 }
