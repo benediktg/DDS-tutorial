@@ -10,14 +10,14 @@ function loadList() {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            createEntries(JSON.parse(this.responseText));
+            getEntries(JSON.parse(this.responseText));
         }
     };
     xhr.open("GET", url, true);
     xhr.send();
 }
 
-function createEntries(array) {
+function getEntries(array) {
     "use strict";
     var entryCount = array.length;
     var i;
@@ -46,4 +46,8 @@ function removeEntry(aTag) {
     xhr.send();
     list.removeChild(localEntries[id]);
     delete localEntries[id];
+}
+
+function postEntry() {
+
 }
