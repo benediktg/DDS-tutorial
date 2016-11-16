@@ -2,22 +2,12 @@ var list = document.getElementsByTagName("ul")[0];
 var form = document.forms[0];
 var url = "https://vsr.informatik.tu-chemnitz.de/edu/2015/evs/exercises/jsajax/guestbook.php";
 var localEntries = {};
-list.removeChild(list.firstElementChild);
-list.removeChild(list.firstElementChild);
-form.getElementsByTagName("button")[0].addEventListener("click", postEntry)
-loadList();
 
-function loadList() {
+function fixedEncodeURIComponent(str) {
     "use strict";
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            getEntries(JSON.parse(this.responseText));
-        }
-    };
-    xhr.send();
-    return;
+    return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+        return '%' + c.charCodeAt(0).toString(16);
+    });
 }
 
 function getEntries(array) {
@@ -42,6 +32,23 @@ function getEntries(array) {
     return;
 }
 
+function getSingleEntry(object) {
+    "use strict";
+    if (String(object.id) in localEntries) {
+        return;
+    }
+    entry = document.createElement("li");
+    entry.innerHTML = "<b>" + object.name + ":</b> " + object.text
+        + " <a href=\"#\" alt=\"Delete entry\">(X)</a>";
+    entry.setAttribute("entry-id", object.id);
+    entry.lastElementChild.addEventListener("click", function () {
+        removeEntry(this);
+    });
+    list.appendChild(entry);
+    localEntries[String(object.id)] = entry;
+    return;
+}
+
 function removeEntry(aTag) {
     "use strict";
     var id = aTag.parentElement.getAttribute("entry-id");
@@ -51,6 +58,19 @@ function removeEntry(aTag) {
     xhr.send();
     list.removeChild(localEntries[id]);
     delete localEntries[id];
+    return;
+}
+
+function loadList() {
+    "use strict";
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            getEntries(JSON.parse(this.responseText));
+        }
+    };
+    xhr.send();
     return;
 }
 
@@ -73,26 +93,12 @@ function postEntry() {
     return;
 }
 
-function getSingleEntry(object) {
+function main() {
     "use strict";
-    if (String(object.id) in localEntries) {
-        return;
-    }
-    entry = document.createElement("li");
-    entry.innerHTML = "<b>" + object.name + ":</b> " + object.text
-        + " <a href=\"#\" alt=\"Delete entry\">(X)</a>";
-    entry.setAttribute("entry-id", object.id);
-    entry.lastElementChild.addEventListener("click", function () {
-        removeEntry(this);
-    });
-    list.appendChild(entry);
-    localEntries[String(object.id)] = entry;
-    return;
+    list.removeChild(list.firstElementChild);
+    list.removeChild(list.firstElementChild);
+    form.getElementsByTagName("button")[0].addEventListener("click", postEntry)
+    loadList();
 }
 
-function fixedEncodeURIComponent(str) {
-    "use strict";
-    return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-        return '%' + c.charCodeAt(0).toString(16);
-    });
-}
+main();
