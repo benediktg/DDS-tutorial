@@ -10,7 +10,7 @@ function fixedEncodeURIComponent(str) {
     });
 }
 
-function getEntries(array) {
+function showAllEntries(array) {
     "use strict";
     var entryCount = array.length;
     var i;
@@ -22,7 +22,7 @@ function getEntries(array) {
         entry = document.createElement("li");
         entry.innerHTML = "<b>" + array[i].name + ":</b> " + array[i].text
             + " <a href=\"#\" alt=\"Delete entry\">(X)</a>";
-        entry.setAttribute("entry-id", array[i].id);
+        entry.setAttribute("entry-id", String(array[i].id));
         entry.lastElementChild.addEventListener("click", function () {
             removeEntry(this);
         });
@@ -32,20 +32,20 @@ function getEntries(array) {
     return;
 }
 
-function getSingleEntry(object) {
+function showSingleEntry(id, name, text) {
     "use strict";
-    if (String(object.id) in localEntries) {
+    if (String(id) in localEntries) {
         return;
     }
-    entry = document.createElement("li");
-    entry.innerHTML = "<b>" + object.name + ":</b> " + object.text
+    var entry = document.createElement("li");
+    entry.innerHTML = "<b>" + name + ":</b> " + text
         + " <a href=\"#\" alt=\"Delete entry\">(X)</a>";
-    entry.setAttribute("entry-id", object.id);
+    entry.setAttribute("entry-id", String(id));
     entry.lastElementChild.addEventListener("click", function () {
         removeEntry(this);
     });
     list.appendChild(entry);
-    localEntries[String(object.id)] = entry;
+    localEntries[String(id)] = entry;
     return;
 }
 
@@ -67,7 +67,7 @@ function loadList() {
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            getEntries(JSON.parse(this.responseText));
+            showAllEntries(JSON.parse(this.responseText));
         }
     };
     xhr.send();
@@ -85,8 +85,8 @@ function postEntry() {
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            response = JSON.parse(this.responseText);
-            getSingleEntry(response.entry);
+            var r = JSON.parse(this.responseText);
+            showSingleEntry(r.entry.id, r.entry.name, r.entry.text);
         }
     };
     xhr.send(params);
