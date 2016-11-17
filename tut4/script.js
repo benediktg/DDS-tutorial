@@ -26,23 +26,6 @@ function showAllEntries(array) {
     return;
 }
 
-function showSingleEntry(id, name, text) {
-    "use strict";
-    if (String(id) in localEntries) {
-        return;
-    }
-    var entry = document.createElement("li");
-    entry.innerHTML = "<b>" + name + ":</b> " + text
-        + " <a href=\"#\" alt=\"Delete entry\">(X)</a>";
-    entry.setAttribute("entry-id", String(id));
-    entry.lastElementChild.addEventListener("click", function () {
-        removeEntry(this);
-    });
-    list.appendChild(entry);
-    localEntries[String(id)] = entry;
-    return;
-}
-
 function removeEntry(aTag) {
     "use strict";
     var id = aTag.parentElement.getAttribute("entry-id");
@@ -80,10 +63,12 @@ function postEntry() {
         var r;
         if (this.readyState == 4 && this.status == 200) {
             r = JSON.parse(this.responseText);
-            showSingleEntry(r.entry.id, r.entry.name, r.entry.text);
+            loadList();
         }
     };
     xhr.send(params);
+    form["name"].value = "";
+    form["text"].value = "";
     return;
 }
 
@@ -95,7 +80,6 @@ function main() {
         function (event) {
             event.preventDefault();
             postEntry();
-            return false;
         });
     loadList();
     return;
