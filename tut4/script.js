@@ -3,12 +3,6 @@ var form = document.forms[0];
 var url = "https://vsr.informatik.tu-chemnitz.de/edu/2015/evs/exercises/jsajax/guestbook.php";
 var localEntries = {};
 
-function fixedEncodeURIComponent(str) {
-    "use strict";
-    return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-        return '%' + c.charCodeAt(0).toString(16);
-    });
-}
 
 function showAllEntries(array) {
     "use strict";
@@ -77,15 +71,15 @@ function loadList() {
 function postEntry() {
     "use strict";
     var xhr = new XMLHttpRequest();
-    var name = fixedEncodeURIComponent(form["name"].value);
-    var text = fixedEncodeURIComponent(form["text"].value);
+    var name = encodeURIComponent(form["name"].value);
+    var text = encodeURIComponent(form["text"].value);
     var params = "name=" + name + "&text=" + text;
-    var response;
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var r = JSON.parse(this.responseText);
+        var r;
+        if (this.readyState == 4 && this.status == 200) {
+            r = JSON.parse(this.responseText);
             showSingleEntry(r.entry.id, r.entry.name, r.entry.text);
         }
     };
@@ -97,8 +91,14 @@ function main() {
     "use strict";
     list.removeChild(list.firstElementChild);
     list.removeChild(list.firstElementChild);
-    form.getElementsByTagName("button")[0].addEventListener("click", postEntry)
+    form.getElementsByTagName("button")[0].addEventListener("click",
+        function (event) {
+            event.preventDefault();
+            postEntry();
+            return false;
+        });
     loadList();
+    return;
 }
 
 main();
