@@ -4,29 +4,7 @@ var url = "https://vsr.informatik.tu-chemnitz.de/edu/2015/evs/exercises/jsajax/g
 var localEntries = {};
 
 
-function showAllEntries(array) {
-    "use strict";
-    var entryCount = array.length;
-    var i;
-    var entry;
-    for (i = 0; i < entryCount; ++i) {
-        if (String(array[i].id) in localEntries) {
-            continue;
-        }
-        entry = document.createElement("li");
-        entry.innerHTML = "<b>" + array[i].name + ":</b> " + array[i].text
-            + " <a href=\"#\" alt=\"Delete entry\">(X)</a>";
-        entry.setAttribute("entry-id", String(array[i].id));
-        entry.lastElementChild.addEventListener("click", function () {
-            removeEntry(this);
-        });
-        list.appendChild(entry);
-        localEntries[String(array[i].id)] = entry;
-    }
-    return;
-}
-
-function showSingleEntry(id, name, text) {
+function appendEntry(id, name, text) {
     "use strict";
     if (String(id) in localEntries) {
         return;
@@ -36,16 +14,15 @@ function showSingleEntry(id, name, text) {
         + " <a href=\"#\" alt=\"Delete entry\">(X)</a>";
     entry.setAttribute("entry-id", String(id));
     entry.lastElementChild.addEventListener("click", function () {
-        removeEntry(this);
+        removeEntry(this.parentElement.getAttribute("entry-id"));
     });
     list.appendChild(entry);
     localEntries[String(id)] = entry;
     return;
 }
 
-function removeEntry(aTag) {
+function removeEntry(id) {
     "use strict";
-    var id = aTag.parentElement.getAttribute("entry-id");
     var params = "id=" + id
     var xhr = new XMLHttpRequest();
     xhr.open("DELETE", url + "?" + params, true);
@@ -55,24 +32,19 @@ function removeEntry(aTag) {
     return;
 }
 
-function loadList() {
-    "use strict";
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            showAllEntries(JSON.parse(this.responseText));
-        }
-    };
-    xhr.send();
-    return;
-}
-
 function postEntry() {
     "use strict";
     var xhr = new XMLHttpRequest();
     var name = encodeURIComponent(form["name"].value);
     var text = encodeURIComponent(form["text"].value);
+    if (name === "") {
+        alert("Please provide a name.");
+        return;
+    }
+    if (text === "") {
+        alert("Please provide some text.");
+        return;
+    }
     var params = "name=" + name + "&text=" + text;
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -80,10 +52,30 @@ function postEntry() {
         var r;
         if (this.readyState == 4 && this.status == 200) {
             r = JSON.parse(this.responseText);
-            showSingleEntry(r.entry.id, r.entry.name, r.entry.text);
+            appendEntry(r.entry.id, r.entry.name, r.entry.text);
         }
     };
     xhr.send(params);
+    form["name"].value = "";
+    form["text"].value = "";
+    return;
+}
+
+function loadList() {
+    "use strict";
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var array = JSON.parse(this.responseText)
+            var entryCount = array.length;
+            var i;
+            for (i = 0; i < entryCount; ++i) {
+                appendEntry(array[i].id, array[i].name, array[i].text);
+            }
+        }
+    };
+    xhr.send();
     return;
 }
 
@@ -95,7 +87,6 @@ function main() {
         function (event) {
             event.preventDefault();
             postEntry();
-            return false;
         });
     loadList();
     return;
