@@ -1,5 +1,9 @@
 $(document).ready(function main() {
     $("#add").click(function addRow() {
+        if ($("#name").val() === "") {
+            alert("Please enter a name.");
+            return;
+        }
         var name = $("<td></td>").text($("#name").val());
         var up = $("<button></button>").text("Move up").click(moveUp);
         var down = $("<button></button>").text("Move down").click(moveDown);
