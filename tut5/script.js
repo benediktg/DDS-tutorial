@@ -25,9 +25,14 @@ $(document).ready(function main() {
 });
 
 function moveUp() {
-
+    var obj = $(this).parent().parent();
+    if (obj.index() === 1) {
+        return;
+    }
+    obj.insertBefore(obj.prev());
 }
 
 function moveDown() {
-
+    var obj = $(this).parent().parent();
+    obj.insertAfter(obj.next());
 }
