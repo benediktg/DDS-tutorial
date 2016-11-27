@@ -1,6 +1,6 @@
 $(document).ready(function main() {
     $("#add").click(function addRow() {
-        if ($("#name").val() === "") {
+        if (/\s*/.test($("#name").val())) {
             alert("Please enter a name.");
             return;
         }
