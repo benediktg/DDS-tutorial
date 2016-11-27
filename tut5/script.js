@@ -10,16 +10,17 @@ $(document).ready(function main() {
     });
 
     $("#sort").click(function sortElements() {
-        $("tr").sort(function (a, b) {
-            var pattern = /Name\s*Operations/;
-            if (pattern.test(a.innerText) || pattern.test(b.innerText)) {
-                return 0;
-            } else if (a.innerText > b.innerText) {
-                return 1;
-            } else {
-                return -1;
-            }
-        }).appendTo("#nameList");
+        if ($("tr").length > 2) {
+            $("tr").slice(1).sort(function (a, b) {
+                if (a.innerText === b.innerText) {
+                    return 0;
+                } else if (a.innerText > b.innerText) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }).appendTo("#nameList");
+        }
     });
 });
 
