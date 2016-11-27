@@ -7,9 +7,21 @@ $(document).ready(function main() {
         var row = $("<tr></tr>").append(name, operations);
         $("#nameList").append(row);
         $("#name").val("");
-    })
+    });
 
-})
+    $("#sort").click(function sortElements() {
+        $("tr").sort(function (a, b) {
+            var pattern = /Name\s*Operations/;
+            if (pattern.test(a.innerText) || pattern.test(b.innerText)) {
+                return 0;
+            } else if (a.innerText > b.innerText) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }).appendTo("#nameList");
+    });
+});
 
 function moveUp() {
 
