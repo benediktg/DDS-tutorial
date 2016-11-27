@@ -10,17 +10,15 @@ $(document).ready(function main() {
     });
 
     $("#sort").click(function sortElements() {
-        if ($("tr").length > 2) {
-            $("tr").slice(1).sort(function (a, b) {
-                if (a.innerText === b.innerText) {
-                    return 0;
-                } else if (a.innerText > b.innerText) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            }).appendTo("#nameList");
-        }
+        $("tr").slice(1).sort(function (a, b) {
+            if (a.innerText === b.innerText) {
+                return 0;
+            } else if (a.innerText > b.innerText) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }).appendTo("#nameList");
     });
 });
 
