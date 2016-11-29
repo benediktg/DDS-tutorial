@@ -8,13 +8,14 @@ TCP_PORT = 5000
 
 
 def create_error_page(conn, err_string):
-    conn.send("HTTP/1.1 200 OK\r\n"
-              "Connection: close\r\n"
-              "Content-Type: text/html; charset=UTF-8\r\n"
-              "\r\n"
-              "<html><head><title>ERROR</title></head>\r\n"
-              "<body><h1>Error</h1><hr/><p>{}</p></body></html>"
-              .format(err_string).encode())
+    response = ("HTTP/1.1 200 OK\r\n"
+                "Connection: close\r\n"
+                "Content-Type: text/html; charset=UTF-8\r\n"
+                "\r\n"
+                "<html><head><title>ERROR</title></head>\r\n"
+                "<body><h1>Error</h1><hr/><p>{}</p></body></html>"
+                .format(err_string))
+    conn.send(response.encode())
     conn.close()
 
 
@@ -30,7 +31,7 @@ def handleRequest(conn):
         key, value = line.split(": ")
         header[key] = value
 
-    # get cookie information
+    # get cookie information (begin)
     cookies = {}
     if 'Cookie' in header:
         cookieList = header['Cookie'].split("; ")
@@ -42,6 +43,7 @@ def handleRequest(conn):
         kontostand = float(cookies['kontostand'])
     else:
         kontostand = 100
+    # (end)
 
     if body:
         pairs = body.split("&")
@@ -60,33 +62,34 @@ def handleRequest(conn):
         kontostand -= amount
 
     http_method = head.split(" ")[0]
-
     if http_method == "POST":
-        conn.send("HTTP/1.1 303 See Other\r\n"
-                  "Connection: close\r\n"
-                  "Content-Type: text/html; charset=UTF-8\r\n"
-                  "Set-Cookie: kontostand={:5.2f}\r\n"
-                  "Location: /\r\n"
-                  "\r\n".format(kontostand).encode())
+        # post redirect get pattern (begin)
+        response = ("HTTP/1.1 303 See Other\r\n"
+                    "Connection: close\r\n"
+                    "Content-Type: text/html; charset=UTF-8\r\n"
+                    "Set-Cookie: kontostand={:5.2f}\r\n"
+                    "Location: /\r\n"
+                    "\r\n".format(kontostand))
+        # (end)
     else:
-        conn.send("HTTP/1.1 200 OK\r\n"
-                  "Connection: close\r\n"
-                  "Content-Type: text/html; charset=UTF-8\r\n"
-                  "Set-Cookie: kontostand={:5.2f}\r\n"
-                  "\r\n"
-                  "<html><head><title>Konto</title></head>\r\n"
-                  "<body><h1>Konto</h1><hr/>\r\n".format(kontostand).encode())
+        response = ("HTTP/1.1 200 OK\r\n"
+                    "Connection: close\r\n"
+                    "Content-Type: text/html; charset=UTF-8\r\n"
+                    "Set-Cookie: kontostand={:5.2f}\r\n"
+                    "\r\n"
+                    "<html><head><title>Konto</title></head>\r\n"
+                    "<body><h1>Konto</h1><hr/>\r\n".format(kontostand))
         if 'amount' in values:
-            conn.send("<p>Überwiesen = {:5.2f}</p>\r\n"
-                      .format(amount).encode())
-        conn.send('<p>Neuer Kontostand = {:5.2f}</p>\r\n'
-                  '<form method="POST">\r\n'
-                  '<p>Betrag zum Überweisen: '
-                  '<input type="text" name="amount"/></p>\r\n'
-                  '<p><input type="submit" value="Abschicken"/></p>\r\n'
-                  '</form>\r\n'
-                  '</body></html>\r\n'.format(kontostand).encode())
+            response += "<p>Überwiesen = {:5.2f}</p>\r\n".format(amount)
+        response += ("<p>Neuer Kontostand = {:5.2f}</p>\r\n"
+                     "<form method=\"POST\">\r\n"
+                     "<p>Betrag zum Überweisen: "
+                     "<input type=\"text\" name=\"amount\"/></p>\r\n"
+                     "<p><input type=\"submit\" value=\"Abschicken\"/></p>\r\n"
+                     "</form>\r\n"
+                     "</body></html>\r\n".format(kontostand))
 
+    conn.send(response.encode())
     conn.close()
     return
 
