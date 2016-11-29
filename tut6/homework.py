@@ -59,7 +59,7 @@ def handleRequest(conn):
 
         try:
             kf = open(KONTOSTANDFILE, "w")
-            kf.write("{}".format(kontostand))
+            kf.write("{:5.2f}".format(kontostand))
             kf.close()
         except:
             create_error_page(conn, "Probleme mit dem Kontostandsfile")
@@ -72,8 +72,8 @@ def handleRequest(conn):
               "<html><head><title>Konto</title></head>\r\n"
               "<body><h1>Konto</h1><hr/>\r\n".encode())
     if 'amount' in values:
-        conn.send("<p>Überwiesen = {}</p>\r\n".format(amount).encode())
-    conn.send('<p>Neuer Kontostand = {}</p>\r\n'
+        conn.send("<p>Überwiesen = {:5.2f}</p>\r\n".format(amount).encode())
+    conn.send('<p>Neuer Kontostand = {:5.2f}</p>\r\n'
               '<form method="POST">\r\n'
               '<p>Betrag zum Überweisen: '
               '<input type="text" name="amount"/></p>\r\n'
