@@ -1,14 +1,18 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import sys, socket
+import socket
+import sys
+
 
 def create_error_page(conn, err_string):
     conn.send('HTTP/1.1 200 OK\r\n')
     conn.send('Connection: close\r\n')
     conn.send('Content-Type: text/html\r\n\r\n')
     conn.send('<html><head><title>ERROR</title></head>\r\n')
-    conn.send('<body><h1>Error</h1><hr/><p>%s</p></body></html>'%(err_string))
+    conn.send('<body><h1>Error</h1><hr/><p>%s</p></body></html>'
+              % (err_string))
     conn.close()
+
 
 def handleRequest(conn):
     data = conn.recv(1024)
@@ -22,7 +26,7 @@ def handleRequest(conn):
         key, value = line.split(': ')
         header[key] = value
 
-    //TODO: get cookie information
+    # TODO: get cookie information
 
     if body:
         pairs = body.split('&')
@@ -37,18 +41,19 @@ def handleRequest(conn):
     except:
         kontostand = 100
 
-    if values.has_key('amount'):
+    if 'amount' in values:
         try:
             amount = float(values['amount'])
         except:
-            create_error_page(conn, "%s ist kein Fliesskommawert"%(values['amount']))
+            create_error_page(conn, "%s ist kein Fliesskommawert"
+                              % (values['amount']))
             return
 
         kontostand -= amount
 
         try:
             kf = open(KONTOSTANDFILE, "w")
-            kf.write("%5.2f"%(kontostand))
+            kf.write("%5.2f" % (kontostand))
             kf.close()
         except:
             create_error_page(conn, "Probleme mit dem Kontostandsfile")
@@ -60,11 +65,12 @@ def handleRequest(conn):
 
     conn.send('<html><head><title>Konto</title></head>\r\n')
     conn.send('<body><h1>Konto</h1><hr/>\r\n')
-    if values.has_key('amount'):
-        conn.send('<p>Überwiesen = %5.2f</p>\r\n'%(amount))
-    conn.send('<p>Neuer Kontostand = %5.2f</p>\r\n'%(kontostand))
+    if 'amount' in values:
+        conn.send('<p>Überwiesen = %5.2f</p>\r\n' % (amount))
+    conn.send('<p>Neuer Kontostand = %5.2f</p>\r\n' % (kontostand))
     conn.send('<form method="POST">\r\n')
-    conn.send('<p>Betrag zum Überweisen: <input type="text" name="amount"/></p>\r\n')
+    conn.send('<p>Betrag zum Überweisen: ' +
+              '<input type="text" name="amount"/></p>\r\n')
     conn.send('<p><input type="submit" value="Abschicken"/></p>\r\n')
     conn.send('</form>\r\n')
     conn.send('</body></html>\r\n')
