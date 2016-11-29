@@ -3,8 +3,6 @@
 import socket
 import sys
 
-KONTOSTANDFILE = "konto.txt"
-
 TCP_IP = ""
 TCP_PORT = 5000
 
@@ -32,20 +30,24 @@ def handleRequest(conn):
         key, value = line.split(": ")
         header[key] = value
 
-    # TODO: get cookie information
+    # get cookie information
+    cookies = {}
+    if 'Cookie' in header:
+        cookieList = header['Cookie'].split("; ")
+        for item in cookieList:
+            key, value = item.split("=")
+            cookies[key] = value
+
+    if 'kontostand' in cookies:
+        kontostand = float(cookies['kontostand'])
+    else:
+        kontostand = 100
 
     if body:
         pairs = body.split("&")
         for pair in pairs:
             key, value = pair.split("=")
             values[key] = value
-
-    try:
-        kf = open(KONTOSTANDFILE, "r")
-        kontostand = float(kf.read(1024))
-        kf.close()
-    except:
-        kontostand = 100
 
     if 'amount' in values:
         try:
@@ -57,20 +59,13 @@ def handleRequest(conn):
 
         kontostand -= amount
 
-        try:
-            kf = open(KONTOSTANDFILE, "w")
-            kf.write("{:5.2f}".format(kontostand))
-            kf.close()
-        except:
-            create_error_page(conn, "Probleme mit dem Kontostandsfile")
-            return
-
     conn.send("HTTP/1.1 200 OK\r\n"
               "Connection: close\r\n"
               "Content-Type: text/html; charset=UTF-8\r\n"
+              "Set-Cookie: kontostand={:5.2f}\r\n"
               "\r\n"
               "<html><head><title>Konto</title></head>\r\n"
-              "<body><h1>Konto</h1><hr/>\r\n".encode())
+              "<body><h1>Konto</h1><hr/>\r\n".format(kontostand).encode())
     if 'amount' in values:
         conn.send("<p>Überwiesen = {:5.2f}</p>\r\n".format(amount).encode())
     conn.send('<p>Neuer Kontostand = {:5.2f}</p>\r\n'
