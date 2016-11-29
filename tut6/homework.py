@@ -5,14 +5,13 @@ import sys
 
 
 def create_error_page(conn, err_string):
-    conn.send(
-        '''HTTP/1.1 200 OK\r\n
-Connection: close\r\n
-Content-Type: text/html\r\n
-\r\n
-<html><head><title>ERROR</title></head>\r\n
-<body><h1>Error</h1><hr/><p>{}</p></body></html>'''.format(err_string)
-        .encode())
+    conn.send("HTTP/1.1 200 OK\r\n"
+              "Connection: close\r\n"
+              "Content-Type: text/html; charset=UTF-8\r\n"
+              "\r\n"
+              "<html><head><title>ERROR</title></head>\r\n"
+              "<body><h1>Error</h1><hr/><p>{}</p></body></html>"
+              .format(err_string).encode())
     conn.close()
 
 
@@ -61,22 +60,21 @@ def handleRequest(conn):
             create_error_page(conn, "Probleme mit dem Kontostandsfile")
             return
 
-    conn.send(
-        '''HTTP/1.1 200 OK\r\n
-Connection: close\r\n
-Content-Type: text/html\r\n
-\r\n
-<html><head><title>Konto</title></head>\r\n
-<body><h1>Konto</h1><hr/>\r\n'''.encode())
+    conn.send("HTTP/1.1 200 OK\r\n"
+              "Connection: close\r\n"
+              "Content-Type: text/html; charset=UTF-8\r\n"
+              "\r\n"
+              "<html><head><title>Konto</title></head>\r\n"
+              "<body><h1>Konto</h1><hr/>\r\n".encode())
     if 'amount' in values:
-        conn.send('<p>Überwiesen = {}</p>\r\n'.format(amount).encode())
-    conn.send(
-        '''<p>Neuer Kontostand = {}</p>\r\n
-<form method="POST">\r\n
-<p>Betrag zum Überweisen: <input type="text" name="amount"/></p>\r\n
-<p><input type="submit" value="Abschicken"/></p>\r\n
-</form>\r\n
-</body></html>\r\n'''.format(kontostand).encode())
+        conn.send("<p>Überwiesen = {}</p>\r\n".format(amount).encode())
+    conn.send('<p>Neuer Kontostand = {}</p>\r\n'
+              '<form method="POST">\r\n'
+              '<p>Betrag zum Überweisen: '
+              '<input type="text" name="amount"/></p>\r\n'
+              '<p><input type="submit" value="Abschicken"/></p>\r\n'
+              '</form>\r\n'
+              '</body></html>\r\n'.format(kontostand).encode())
     conn.close()
     return
 
