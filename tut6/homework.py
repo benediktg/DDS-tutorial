@@ -3,6 +3,11 @@
 import socket
 import sys
 
+KONTOSTANDFILE = "konto.txt"
+
+TCP_IP = ""
+TCP_PORT = 5000
+
 
 def create_error_page(conn, err_string):
     conn.send("HTTP/1.1 200 OK\r\n"
@@ -18,21 +23,21 @@ def create_error_page(conn, err_string):
 def handleRequest(conn):
     data = conn.recv(1024).decode()
 
-    head, body = data.split('\r\n\r\n')
+    head, body = data.split("\r\n\r\n")
     header = {}
     values = {}
 
-    lines = head.split('\r\n')
+    lines = head.split("\r\n")
     for line in lines[1:]:
-        key, value = line.split(': ')
+        key, value = line.split(": ")
         header[key] = value
 
     # TODO: get cookie information
 
     if body:
-        pairs = body.split('&')
+        pairs = body.split("&")
         for pair in pairs:
-            key, value = pair.split('=')
+            key, value = pair.split("=")
             values[key] = value
 
     try:
@@ -78,16 +83,12 @@ def handleRequest(conn):
     conn.close()
     return
 
-KONTOSTANDFILE = 'konto.txt'
+if __name__ == "__main__":
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind((TCP_IP, TCP_PORT))
+    s.listen(1)
 
-TCP_IP = ''
-TCP_PORT = 5000
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind((TCP_IP, TCP_PORT))
-s.listen(1)
-
-while 1:
-    conn, addr = s.accept()
-    handleRequest(conn)
+    while 1:
+        conn, addr = s.accept()
+        handleRequest(conn)
