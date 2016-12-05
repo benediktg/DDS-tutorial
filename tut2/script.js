@@ -9,16 +9,11 @@ function setField(element) {
     } else {
         element.style.backgroundColor = '#eee';
     }
-    if (lastField === element) {
-        ++changeCounter;
-    } else {
-        changeCounter = 0;
-    }
+    ++changeCounter;
     if (changeCounter === 10) {
         alert('You have clicked 10 times on the field!');
         changeCounter = 0;
     }
-    lastField = element;
 }
 
 function setFillColor(color) {
