@@ -4,7 +4,6 @@ var list = document.getElementsByTagName("ul")[0];
 var form = document.forms[0];
 var url = "https://vsr.informatik.tu-chemnitz.de/edu/2015/evs/exercises/jsajax/guestbook.php";
 
-
 function appendEntry(id, name, text) {
     var entry = document.createElement("li");
     entry.innerHTML = "<b>" + name + ":</b> " + text

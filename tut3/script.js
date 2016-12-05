@@ -1,26 +1,21 @@
+"use strict";
+
 var table = document.getElementsByTagName("tbody")[0];
 
 function addRow() {
-    "use strict";
-    var width = table.rows[0].cells.length;
     var newRow = table.insertRow();
-    while (width > 0) {
-        width -= 1;
+    for (var i = table.rows[0].cells.length; i > 0; --i) {
         newRow.insertCell();
     }
 }
 
 function addCol() {
-    "use strict";
-    var height = table.rows.length;
-    while (height > 0) {
-        height -= 1;
-        table.rows[height].insertCell();
+    for (var i = table.rows.length - 1; i >= 0; --i) {
+        table.rows[i].insertCell();
     }
 }
 
 function ensureTableSize(minHeight, minWidth) {
-    "use strict";
     var currentHeight = table.rows.length;
     var currentWidth = table.rows[0].cells.length;
     while (currentHeight <= minHeight) {
@@ -34,10 +29,22 @@ function ensureTableSize(minHeight, minWidth) {
 }
 
 function handleMyButton() {
-    "use strict";
-    var col = parseInt(document.getElementById("field_x").value);
-    var row = parseInt(document.getElementById("field_y").value);
-    var text = document.getElementById("text").value;
+    var colText = document.getElementById("field_x").value.trim();
+    var rowText = document.getElementById("field_y").value.trim();
+    var isNumber = /^[1-9][0-9]*$/;
+    if (!isNumber.test(colText)) {
+        alert ("Please provide a valid x coordinate.")
+        document.getElementById("field_x").value = "";
+        return;
+    }
+    if (!isNumber.test(rowText)) {
+        alert ("Please provide a valid y coordinate.")
+        document.getElementById("field_y").value = "";
+        return;
+    }
+    var col = parseInt(colText) - 1;
+    var row = parseInt(rowText) - 1;
+    var text = document.getElementById("text").value.trim();
     var css = document.getElementById("css").value;
 
     ensureTableSize(row, col);
@@ -53,6 +60,21 @@ function handleMyButton() {
         });
         cell.setAttribute("eventlistener", "available");
     }
+
+    document.getElementById("field_x").value = "";
+    document.getElementById("field_y").value = "";
+    document.getElementById("text").value = "";
+    document.getElementById("css").value = "";
+}
+
+function handleEnterKey(event) {
+    if (event.which === 13) {
+        handleMyButton();
+    }
 }
 
 document.getElementById("mybutton").addEventListener("click", handleMyButton);
+document.getElementById("field_x").addEventListener("keydown", handleEnterKey);
+document.getElementById("field_y").addEventListener("keydown", handleEnterKey);
+document.getElementById("text").addEventListener("keydown", handleEnterKey);
+document.getElementById("css").addEventListener("keydown", handleEnterKey);

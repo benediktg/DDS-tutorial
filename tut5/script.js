@@ -1,3 +1,5 @@
+"use strict";
+
 $(document).ready(function main() {
     $("#add").click(addRow);
     $("#name").keypress(function enterKey(event) {
