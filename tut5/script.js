@@ -1,16 +1,9 @@
 $(document).ready(function main() {
-    $("#add").click(function addRow() {
-        if (/\s*/.test($("#name").val())) {
-            alert("Please enter a name.");
-            return;
+    $("#add").click(addRow);
+    $("#name").keypress(function enterKey(event) {
+        if (event.which === 13) {  // enter key
+            addRow();
         }
-        var name = $("<td></td>").text($("#name").val());
-        var up = $("<button></button>").text("Move up").click(moveUp);
-        var down = $("<button></button>").text("Move down").click(moveDown);
-        var operations = $("<td></td>").append(up, down);
-        var row = $("<tr></tr>").append(name, operations);
-        $("#nameList").append(row);
-        $("#name").val("");
     });
 
     $("#sort").click(function sortElements() {
@@ -25,6 +18,20 @@ $(document).ready(function main() {
         }).appendTo("#nameList");
     });
 });
+
+function addRow() {
+    if (!/[A-Za-z]+/.test($("#name").val())) {
+        alert("Please enter a name.");
+        return;
+    }
+    var name = $("<td></td>").text($("#name").val());
+    var up = $("<button></button>").text("Move up").click(moveUp);
+    var down = $("<button></button>").text("Move down").click(moveDown);
+    var operations = $("<td></td>").append(up, down);
+    var row = $("<tr></tr>").append(name, operations);
+    $("#nameList").append(row);
+    $("#name").val("");
+}
 
 function moveUp() {
     var obj = $(this).parent().parent();
