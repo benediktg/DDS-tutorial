@@ -1,9 +1,9 @@
 var bewege = null;
-var changeSpeed = null;
+var erzeugeElemente = null;
 
-require(["dojo/dom", "dijit/form/HorizontalSlider", "dijit/form/HorizontalRuleLabels", "dojox/gfx", "dojo/domReady!"],
+require(["dojo/dom", "dojox/gfx", "dojo/domReady!"],
 
-    function (dom, HorizontalSlider, HorizontalRuleLabels, gfx) {
+    function (dom, gfx) {
         var surface = gfx.createSurface("zeichenflaeche", 300, 500);
         var surface_size = {width: 500, height: 300};
 
@@ -27,7 +27,6 @@ require(["dojo/dom", "dijit/form/HorizontalSlider", "dijit/form/HorizontalRuleLa
         var KOLBEN_HOCH = 70;
         var KOLBEN_OVER = 7;
         var K_RING_DIST = 5;
-        var SPEED_FAC = 0.8;
 
         var winkel = 0.0;
         var trans1;
@@ -37,9 +36,13 @@ require(["dojo/dom", "dijit/form/HorizontalSlider", "dijit/form/HorizontalRuleLa
         var scheibe;
         var stange;
 
-        changeSpeed = function (newspeed) {
-            speed = newspeed * SPEED_FAC;
-        }
+        var scheibe_basis;
+        var pleuel;
+        var stange;
+        var stange_base;
+        var splint1;
+        var splint2;
+        var trans1;
 
         bewege = function() {
             winkel += speed;
@@ -140,21 +143,5 @@ require(["dojo/dom", "dijit/form/HorizontalSlider", "dijit/form/HorizontalRuleLa
         }
 
         erzeugeElemente();
-
-        var slider = new HorizontalSlider({
-            name: "slider",
-            value: 3,
-            minimum: -10,
-            maximum: 10,
-            discreteValues: 21,
-            intermediateChanges: true,
-            style: "width:300px;",
-            onChange: changeSpeed
-        }, "slider");
-
-        var hLabels = new HorizontalRuleLabels({
-            container: "bottomDecoration",
-            style: "width:260px;margin-left:20px;height:2em;font-size:75%;color:gray;"
-        }, "SliderLabels");
     }
 );
