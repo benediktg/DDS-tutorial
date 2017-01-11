@@ -9,6 +9,7 @@ class WebSocketHandler(wsserver.dispatcher):
     def __init__(self, sock=None):
         wsserver.dispatcher.__init__(self, sock=sock)
     def onmessage(self, data):
+        print(data)
         for h in wshandlers:
             h.snd(data)
     def onclose(self):
@@ -26,7 +27,7 @@ class WebSocketServer(wsserver.dispatcher):
         print 'new connection from %s' % repr(addr)
         wshandlers.append(WebSocketHandler(sock=sock))
 
-        
+
 if len(sys.argv) != 2:
     print "Benutzung: python %s <port>"%sys.argv[0]
     sys.exit(1)

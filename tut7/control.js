@@ -1,16 +1,23 @@
-var changeSpeed = null;
+try {
+    var ws = new WebSocket("ws://localhost:9000/");
 
-require(["dojo/dom", "dijit/form/HorizontalSlider", "dijit/form/HorizontalRuleLabels", "dojo/domReady!"],
+    ws.onopen = function (event) {
+        console.log("Websocket opened.", event);
+    };
+    ws.onclose = function (event) {
+        console.log("Socket closed.", event);
+    };
+    ws.onerror = function (event) {
+        console.log("Socket error:", event);
+    };
+} catch (exc) {
+    console.log("Socket exception:", exc);
+}
+
+require(["dojo/dom", "dijit/form/HorizontalSlider",
+        "dijit/form/HorizontalRuleLabels", "dojo/domReady!"],
 
     function (dom, HorizontalSlider, HorizontalRuleLabels) {
-        var SPEED_FAC = 0.8;
-
-        var speed = 3;
-
-        changeSpeed = function (newspeed) {
-            speed = newspeed * SPEED_FAC;
-        }
-
         var slider = new HorizontalSlider({
             name: "slider",
             value: 3,
@@ -19,7 +26,12 @@ require(["dojo/dom", "dijit/form/HorizontalSlider", "dijit/form/HorizontalRuleLa
             discreteValues: 21,
             intermediateChanges: true,
             style: "width:300px;",
-            onChange: changeSpeed
+            onChange: function (newSpeed) {
+                if (ws.readyState !== WebSocket.OPEN) {
+                    return;
+                }
+                ws.send(newSpeed.toString());
+            }
         }, "slider");
 
         var hLabels = new HorizontalRuleLabels({

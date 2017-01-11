@@ -1,5 +1,30 @@
 var bewege = null;
 var erzeugeElemente = null;
+var SPEED_FAC = 0.8;
+var speed = 3;
+
+try {
+    var ws = new WebSocket("ws://localhost:9000/");
+
+    ws.onopen = function (event) {
+        console.log("Websocket opened.");
+    };
+    ws.onclose = function (event) {
+        console.log("Socket closed.");
+    };
+    ws.onmessage = function (event) {
+        console.log("Socket message:", event.data);
+        newSpeed = parseInt(event.data);
+        if (newSpeed <= 10 && newSpeed >= -10) {
+            speed = newSpeed * SPEED_FAC;
+        }
+    };
+    ws.onerror = function (event) {
+        console.log("Socket error:", event);
+    };
+} catch (exc) {
+    console.log("Socket exception:", ex);
+}
 
 require(["dojo/dom", "dojox/gfx", "dojo/domReady!"],
 
@@ -21,7 +46,7 @@ require(["dojo/dom", "dojox/gfx", "dojo/domReady!"],
         var STANGE_OVER = 0.06 * STANGE_LANG;
         var KOLBEN_WIDTH = 20;
         var KOLBEN_HEIGHT = 70;
-        var KOLBEN_DIST = 0.9 * KOLBEN_HEIGHT
+        var KOLBEN_DIST = 0.9 * KOLBEN_HEIGHT;
         var KOLBEN_WIDTH2 = 30;
         var KOLBEN_WIDTH1 = 20;
         var KOLBEN_HOCH = 70;
@@ -30,7 +55,6 @@ require(["dojo/dom", "dojox/gfx", "dojo/domReady!"],
 
         var winkel = 0.0;
         var trans1;
-        var speed = 3;
 
         var kolben;
         var scheibe;
@@ -97,10 +121,10 @@ require(["dojo/dom", "dojox/gfx", "dojo/domReady!"],
                 .setStroke({color: "#000044", width: 2});
             scheibe_basis.moveTo(0, 0);
             scheibe_basis.lineTo(-SCHEIBE_RAD * Math.cos(Math.PI * SCHEIBE_OFFENW / 180.0),
-                -SCHEIBE_RAD * Math.sin(Math.PI * SCHEIBE_OFFENW / 180.0));
+                                 -SCHEIBE_RAD * Math.sin(Math.PI * SCHEIBE_OFFENW / 180.0));
             scheibe_basis.arcTo(SCHEIBE_RAD, SCHEIBE_RAD, 0, true, true,
-                SCHEIBE_RAD * Math.cos(Math.PI * SCHEIBE_OFFENW / 180.0),
-                -SCHEIBE_RAD * Math.sin(Math.PI * SCHEIBE_OFFENW / 180.0));
+                                SCHEIBE_RAD * Math.cos(Math.PI * SCHEIBE_OFFENW / 180.0),
+                                -SCHEIBE_RAD * Math.sin(Math.PI * SCHEIBE_OFFENW / 180.0));
             scheibe_basis.lineTo(0, 0);
             scheibe_basis.closePath();
 
@@ -110,11 +134,13 @@ require(["dojo/dom", "dojox/gfx", "dojo/domReady!"],
 
             pleuel.moveTo(-PLEUEL_BREITE / 2.0, PLEUEL_LANG_KURZ);
             pleuel.lineTo(-PLEUEL_BREITE / 2.0, -PLEUEL_LANG_LANG);
-            pleuel.arcTo(PLEUEL_BREITE / 2.0, PLEUEL_BREITE / 2.0 / 2.0, 0, true, true,
-                PLEUEL_BREITE / 2.0, -PLEUEL_LANG_LANG);
+            pleuel.arcTo(PLEUEL_BREITE / 2.0, PLEUEL_BREITE / 2.0 / 2.0, 0,
+                         true, true,
+                         PLEUEL_BREITE / 2.0, -PLEUEL_LANG_LANG);
             pleuel.lineTo( PLEUEL_BREITE / 2.0, PLEUEL_LANG_KURZ);
-            pleuel.arcTo(PLEUEL_BREITE / 2.0, PLEUEL_BREITE / 2.0 / 2.0, 0, true, true,
-                -PLEUEL_BREITE / 2.0, PLEUEL_LANG_KURZ);
+            pleuel.arcTo(PLEUEL_BREITE / 2.0, PLEUEL_BREITE / 2.0 / 2.0, 0,
+                         true, true,
+                         -PLEUEL_BREITE / 2.0, PLEUEL_LANG_KURZ);
             pleuel.closePath();
 
             stange = surface.createGroup();
@@ -124,11 +150,13 @@ require(["dojo/dom", "dojox/gfx", "dojo/domReady!"],
 
             stange_base.moveTo(-STANGE_BREIT / 2.0, -STANGE_OVER);
             stange_base.lineTo(-STANGE_BREIT / 2.0, STANGE_LANG + STANGE_OVER);
-            stange_base.arcTo(STANGE_BREIT / 2.0, STANGE_BREIT / 2.0 / 2.0, 0, true, false,
-                STANGE_BREIT / 2.0, STANGE_LANG + STANGE_OVER);
+            stange_base.arcTo(STANGE_BREIT / 2.0, STANGE_BREIT / 2.0 / 2.0, 0,
+                              true, false,
+                              STANGE_BREIT / 2.0, STANGE_LANG + STANGE_OVER);
             stange_base.lineTo( STANGE_BREIT / 2.0, -STANGE_OVER);
-            stange_base.arcTo(STANGE_BREIT / 2.0, STANGE_BREIT / 2.0 / 2.0, 0, true, false,
-                -STANGE_BREIT / 2.0, -STANGE_OVER);
+            stange_base.arcTo(STANGE_BREIT / 2.0, STANGE_BREIT / 2.0 / 2.0, 0,
+                              true, false,
+                              -STANGE_BREIT / 2.0, -STANGE_OVER);
             stange_base.closePath();
 
             splint1 = stange.createCircle({cx: 0, cy: STANGE_LANG, r:SPLINT_RAD})
