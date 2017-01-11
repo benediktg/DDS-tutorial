@@ -7,26 +7,26 @@ wshandlers = []
 
 class WebSocketHandler(wsserver.dispatcher):
     def __init__(self, sock=None):
-    	wsserver.dispatcher.__init__(self, sock=sock)
+        wsserver.dispatcher.__init__(self, sock=sock)
     def onmessage(self, data):
-    	for h in wshandlers:
-    		h.snd(data)
+        for h in wshandlers:
+            h.snd(data)
     def onclose(self):
-    	print 'onclose'
+        print 'onclose'
 
 class WebSocketServer(wsserver.dispatcher):
     def __init__(self, addr):
-    	wsserver.dispatcher.__init__(self)
-    	self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-    	self.set_reuse_addr()
-    	self.bind(addr)
-    	self.listen(5)
+        wsserver.dispatcher.__init__(self)
+        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.set_reuse_addr()
+        self.bind(addr)
+        self.listen(5)
     def onconnect(self):
-    	sock, addr = self.accept()
-    	print 'new connection from %s' % repr(addr)
-    	wshandlers.append(WebSocketHandler(sock=sock))
+        sock, addr = self.accept()
+        print 'new connection from %s' % repr(addr)
+        wshandlers.append(WebSocketHandler(sock=sock))
 
-    	
+        
 if len(sys.argv) != 2:
     print "Benutzung: python %s <port>"%sys.argv[0]
     sys.exit(1)
